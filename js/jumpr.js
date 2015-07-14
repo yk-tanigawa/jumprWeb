@@ -8,34 +8,61 @@ if (debugMode == false) {
     $("#debugMode").hide();
 };
 
+/* hide the template of the order */
+$(".template").hide();
+
+function addOrder(firstName, lastName, timeOfOrder, timeOfPickup, items, orderId){
+    
+    var timeAndName = timeOfPickup + " " + firstName + " " + lastName;
+    
+    $order = $(".orders").children(".order.template").clone();
+    $order.removeClass("template");
+    $order.show();
+    
+    
+    $order.attr('id', orderId);
+    $order.find(".timeAndName").text(timeAndName);
+    $order.find(".itemList").append(convertToList(items));
+    $order.find(".orderId").text("Order ID : " + orderId);
+    $order.find(".timeOfOrder").text("This oreder was created on " + timeOfOrder);
+    
+    $(".orders").prepend($order);
+
+}
+function removeOrder(orderID){
+    
+}
+
 /* push to Server */
 $("#push").click(function(){
-    /*
-    var firstName = $("#firstNameInput").val(), 
-        lastName = $("#LastNameInput").val(),
-        store = $("storeInput").val(),
-        timeOfPickUp = $("pickUpInput").val(),
-        items = $("itemsInput").val(),
-        timeOfOrder = "12:00";
-        */
-    var firstName = "Yosuke",
-        lastName = "TANIGAWA",
-        timeOfOrder = "12:55",
-        timeOfPickUp = "13:00",
-        items = "{croissant: 1, coffee: 1}";
-        //items = '{"croissant" : 1.6,"pain au chocolat" : 1.4}';
-    orderDB.push({firstName: firstName, lastName: lastName, timeOfOrder: timeOfOrder, timeOfPickUp: timeOfPickUp, orderList: items});
+    var d = new Date();
+    
+    var firstName = $(':text[name="firstNameInput"]').val(),
+        lastName = $(':text[name="lastNameInput"]').val(),
+        timeOfOrder = Date(),
+        timeOfPickUp = $(':text[name="pickUpInput"]').val(),
+        items = $(':text[name="itemsInput"]').val();
+    orderDB.push({firstName: firstName,
+                  lastName: lastName,
+                  timeOfOrder: timeOfOrder,
+                  timeOfPickUp: timeOfPickUp,
+                  items: items,
+                  confirmed: false,
+                  orderID: d.getTime()});
 });
 
 
-orderDB.on('child_added', function(snapshot) {
+orderDB.on('child_added', function(snapshot, prevChildKey) {
     var newOrder = snapshot.val();
-    var name = newOrder.firstName + " " + newOrder.lastName,
+    var firstName = newOrder.firstName,
+        lastName = newOrder.lastName,
         timeOfPickUp = newOrder.timeOfPickUp,
         timeOfOrder = newOrder.timeOfOrder,
-        orderList = newOrder.orderList;
-    var timeAndName = timeOfPickUp + ' ' + name;
-    window.alert(timeAndName);
+        items = newOrder.items,
+        orderId = newOrder.orderID;
+    
+    //window.alert(orderId);
+    addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, items, orderId);
     
 }); 
 
@@ -56,43 +83,3 @@ function convertToList(items){
 }
 
 
-$("#add").click(function(){
-    
-    $order = $(".orders").children(".order.template").clone();
-    
-    var firstName = "Yosuke",
-        lastName = "TANIGAWA",
-        timeOfOrder = "12:55",
-        timeOfPickUp = "14:00",
-        items = "croissant: 1",
-        orderId = 5;
-    var timeAndName = timeOfPickUp + " " + firstName + " " + lastName;
-    
-    $order.attr('id', orderId);
-    $order.find(".timeAndName").text(timeAndName);
-    $order.find(".itemList").append(convertToList(items));
-    $order.find(".orderId").text("Order ID : " + orderId);
-    $order.find(".timeOfOrder").text("This oreder was created on " + timeOfOrder);
-    
-    $(".orders").prepend($order);
-    
-    //$order = $(".order.template").clone();
-    //$order.remove();
-    /*
-    $order.removeClass("template");
-    $order.show();
-    
-    var firstName = "Yosuke",
-        lastName = "TANIGAWA",
-        timeOfOrder = "12:55",
-        timeOfPickUp = "13:00",
-        items = "{croissant: 1, coffee: 1}";
-*/
-/*
-    $order.attr('id', entry);
-    $entry.children(".text").html(entry + " Priority(" + priority + ")");
-    $entry.data('priority', priority);
-    $entry.data('name', entry);
-    */
-
-});
