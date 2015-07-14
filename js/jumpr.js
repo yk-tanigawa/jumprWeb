@@ -9,7 +9,7 @@ if (debugMode == false) {
 };
 
 /* hide the template of the order */
-$(".template").hide();
+//$(".template").hide();
 
 function addOrder(firstName, lastName, timeOfOrder, timeOfPickup, items, orderId){
     
@@ -20,7 +20,8 @@ function addOrder(firstName, lastName, timeOfOrder, timeOfPickup, items, orderId
     $order.show();
     
     
-    $order.attr('id', orderId);
+    $order.attr("id", orderId);
+    
     $order.find(".timeAndName").text(timeAndName);
     $order.find(".itemList").append(convertToList(items));
     $order.find(".orderId").text("Order ID : " + orderId);
@@ -29,8 +30,9 @@ function addOrder(firstName, lastName, timeOfOrder, timeOfPickup, items, orderId
     $(".orders").prepend($order);
 
 }
+
 function removeOrder(orderID){
-    
+    $order = $(".orders").children(".order#" + orderID).remove();  
 }
 
 /* push to Server */
@@ -61,14 +63,24 @@ orderDB.on('child_added', function(snapshot, prevChildKey) {
         items = newOrder.items,
         orderId = newOrder.orderID;
     
-    //window.alert(orderId);
-    addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, items, orderId);
+    /*
+     *
+      Comfirmation of the order 
+                                 */
     
+    addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, items, orderId);
 }); 
 
-$(".timeline-badge").click(function(){
-    $(this).parents(".order").remove();    
-    window.alert("removed");
+orderDB.on('child_removed', function(dataSnapshot) {
+    var orderIdToBeDeleted = dataSnapshot.val().orderID;
+    removeOrder(orderIdToBeDeleted);
+});
+
+$(document).on("click", ".order", function(){
+    //window.alert("deleting the item");
+    var orderId = $(this).attr("id");
+    removeOrder(orderId);
+    //window.alert(orderId + " was removed");
 });
 
 function convertToListItem(item){
