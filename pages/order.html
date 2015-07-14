@@ -93,19 +93,19 @@
                                     <form role="form">
                                         <div class="form-group col-lg-4">
                                             <label>First Name</label>
-                                            <input class="form-control" type="text" name="firstNameInput" placeholder="First Name">
+                                            <input class="form-control" type="text" name="firstNameInput" placeholder="First Name" value="Yosuke">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>Last Name</label>
-                                            <input class="form-control" type="text" name="lastNameInput" placeholder="Last Name">
+                                            <input class="form-control" type="text" name="lastNameInput" placeholder="Last Name" value="TANIGAWA">
                                         </div>
                                         <div class="form-group col-lg-4">
                                             <label>Pick up Time</label>
-                                            <input class="form-control" type="text" name="pickUpInput" placeholder="Pick up Time">
+                                            <input class="form-control" type="text" name="pickUpInput" placeholder="Pick up Time" value="12:00">
                                         </div>
                                         <div class="form-group col-lg-12">
-                                            <label>Items</label>
-                                            <input class="form-control" type="text" name="itemsInput" placeholder="Chocolate Cake">
+                                            <label>Items (JSON format)</label>
+                                            <input class="form-control" type="text" name="itemsInput" placeholder='{"coffee":1,"chocolate cake":1}' value='{"coffee":1,"croissant":2}'>
                                         </div>
                                         <div class="col-lg-12">
                                             
@@ -149,8 +149,8 @@
                                     </div>
                                     <div class="timeline-panel">
                                         <div class="timeline-heading">
-                                            <h4 class="timeline-title timeAndName" id="testTitle">
-                                            <!--13:00 Yosuke TANIGAWA-->
+                                            <h4 class="timeline-title timeAndName">
+                                            25:00 Yosuke TANIGAWA [template]
                                             </h4>
                                         </div>
                                         <div class="timeline-body">
@@ -175,7 +175,7 @@
                                         <!-- /.timeline-body-->
                                     </div>
                                 </li>
-                                <li class="timeline-inverted order" id = "2">
+                                <li class="timeline-inverted order hide" id = "2">
                                     <div class="timeline-badge warning"><i class="fa fa-credit-card"></i>
                                     </div>
                                     <div class="timeline-panel">
@@ -198,7 +198,7 @@
                                         <!-- /.timeline-body-->
                                     </div>
                                 </li>
-                                <li class="timeline-inverted order" id = "3">
+                                <li class="timeline-inverted order hide" id = "3">
                                     <div class="timeline-badge"><i class="fa fa-credit-card"></i>
                                     </div>
                                     <div class="timeline-panel">
