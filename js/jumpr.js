@@ -11,14 +11,19 @@ if (debugMode == false) {
 /* hide the template of the order */
 //$(".template").hide();
 
-function getPickUpTime($order) {
+function getPickUpTimeAndName($order) {
+    return $order.find(".timeAndName").text();
 }
 
 function addOrder(firstName, lastName, timeOfOrder, timeOfPickup, items, orderId) {
     
     var timeAndName = timeOfPickup + " " + firstName + " " + lastName;
     
-    $order = $(".orders").children(".order.template").clone();
+    $orders = $(".orders")
+    $orderBottom = $orders.children(".order.template");
+    $orderBefore = $orderBottom;
+    
+    $order = $orders.children(".order.template").clone();
     $order.removeClass("template");
     $order.show();
     
@@ -30,7 +35,11 @@ function addOrder(firstName, lastName, timeOfOrder, timeOfPickup, items, orderId
     $order.find(".orderId").text("Order ID : " + orderId);
     $order.find(".timeOfOrder").text("This oreder was created on " + timeOfOrder);
     
-    $(".orders").append($order);
+    if( getPickUpTimeAndName($order) < getPickUpTimeAndName($orderBefore) ){
+        $orderBefore = $orderBefore.prev();
+    }
+    
+    $orderBefore.after($order);
 
 }
 
