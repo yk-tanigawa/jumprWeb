@@ -79,13 +79,10 @@
 
         <div id="page-wrapper">
             
-            <div class="row">
+            <div class="row" id="debugMode">
                 <div class="col-lg-12">
                     <h1 class="page-header">Debug Mode</h1>
-                    <p id="test">test</p>
-                    <button id="get">get</button>
-                    <button id="push">push</button>
-                    
+
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             Push to Firebase
@@ -111,8 +108,10 @@
                                             <input class="form-control" id="itemsInput" placeholder="Chocolate Cake">
                                         </div>
                                         <div class="col-lg-12">
-                                            <button type="reset" class="btn btn-default">Reset Button</button>
-                                            <button type="submit" class="btn btn-default" id="submit">Submit Button</button>
+                                            
+                                            <button type="reset" class="btn btn-default">Reset</button>
+                                            <button type="button" class="btn btn-default" id="push">Push to Firebase</button>
+                                            <button type="button" class="btn btn-default" id="add">Add to the List</button>
                                         </div>
                                     </form>
                                 </div>
@@ -145,9 +144,40 @@
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <ul class="timeline">
-                                <li class="timeline-inverted">
+                            <ul class="timeline orders">
+                                <li class="timeline-inverted order template">
                                     <div class="timeline-badge danger"><i class="fa fa-credit-card"></i>
+                                    </div>
+                                    <div class="timeline-panel">
+                                        <div class="timeline-heading">
+                                            <h4 class="timeline-title timeAndName" id="testTitle">
+                                            <!--13:00 Yosuke TANIGAWA-->
+                                            </h4>
+                                        </div>
+                                        <div class="timeline-body">
+                                            <div class="row">
+                                                <div class="col-lg-12 itemList">
+                                                    <!--
+                                                    <ul>
+                                                        <li>coffee 1</li>
+                                                    </ul>
+                                                    -->
+                                                </div>
+                                                <!-- /.col-lg-12 (nested) -->
+                                            </div>
+                                            <!-- /.row -->
+                                            <p class="pull-right text-muted timeOfOrder">
+                                                <!--This oreder was created on 12:00-->
+                                            </p>                                     
+                                            <p class="text-muted orderId">
+                                                <!--Order ID : 1-->
+                                            </p>
+                                        </div>
+                                        <!-- /.timeline-body-->
+                                    </div>
+                                </li>
+                                <li class="timeline-inverted order" id = "2">
+                                    <div class="timeline-badge warning"><i class="fa fa-credit-card"></i>
                                     </div>
                                     <div class="timeline-panel">
                                         <div class="timeline-heading">
@@ -163,56 +193,13 @@
                                                 <!-- /.col-lg-12 (nested) -->
                                             </div>
                                             <!-- /.row -->
-
                                             <p class="pull-right text-muted">This oreder was created on 12:00</p>                                     
-                                            <p class="text-muted">Order ID : 0001</p>
+                                            <p class="text-muted">Order ID : 0002</p>
                                         </div>
                                         <!-- /.timeline-body-->
                                     </div>
                                 </li>
-                                <li class="timeline-inverted">
-                                    <div class="timeline-badge warning"><i class="fa fa-credit-card"></i>
-                                    </div>
-                                    <div class="timeline-panel">
-                                        <div class="timeline-heading">
-                                            <h4 class="timeline-title">13:00 Yosuke TANIGAWA</h4>
-                                        </div>
-                                        <div class="timeline-body">
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <div class="table-responsive">
-                                                        <table class="table table-bordered table-hover table-striped">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>#</th>
-                                                                    <th>Date</th>
-                                                                    <th>Time</th>
-                                                                    <th>Amount</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>3326</td>
-                                                                    <td>10/21/2013</td>
-                                                                    <td>3:29 PM</td>
-                                                                    <td>$321.33</td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                    <!-- /.table-responsive -->
-                                                </div>
-                                                <!-- /.col-lg-12 (nested) -->
-                                            </div>
-                                            <!-- /.row -->
-
-                                            <p class="pull-right text-muted">This oreder was creation on 12:00</p>                                     
-                                            <p class="text-muted">Order ID : 0001</p>
-                                        </div>
-                                        <!-- /.timeline-body-->
-                                    </div>
-                                </li>
-                                <li class="timeline-inverted">
+                                <li class="timeline-inverted order" id = "3">
                                     <div class="timeline-badge"><i class="fa fa-credit-card"></i>
                                     </div>
                                     <div class="timeline-panel">
@@ -222,39 +209,19 @@
                                         <div class="timeline-body">
                                             <div class="row">
                                                 <div class="col-lg-12">
-                                                    <div class="table-responsive">
-                                                        <table class="table table-bordered table-hover table-striped">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>#</th>
-                                                                    <th>Date</th>
-                                                                    <th>Time</th>
-                                                                    <th>Amount</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>3326</td>
-                                                                    <td>10/21/2013</td>
-                                                                    <td>3:29 PM</td>
-                                                                    <td>$321.33</td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                    <!-- /.table-responsive -->
+                                                    <ul>
+                                                        <li>coffee 1</li>
+                                                    </ul>
                                                 </div>
                                                 <!-- /.col-lg-12 (nested) -->
                                             </div>
                                             <!-- /.row -->
-
-                                            <p class="pull-right text-muted">This oreder was creation on 12:00</p>                                     
-                                            <p class="text-muted">Order ID : 0001</p>
+                                            <p class="pull-right text-muted">This oreder was created on 12:00</p>                                     
+                                            <p class="text-muted">Order ID : 0003</p>
                                         </div>
                                         <!-- /.timeline-body-->
                                     </div>
                                 </li>
-
                             </ul>
                         </div>
                         <!-- /.panel-body -->
