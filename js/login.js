@@ -51,7 +51,22 @@ $(document).on("click", "#register", function(){
     });
 });
 
-
+/*
+$(document).on("click", "#facebook", function(){    
+    jumprDB.authWithOAuthPopup("facebook", function(error, authData) {
+        if (error) {
+            console.log("Login Failed!", error);
+            $("#alertTitle").text("Login Failed!");
+            $('#alertDetail').text("Error logging user in:", error);
+        } else {
+            console.log("Authenticated successfully with payload:", authData);
+            $("#alertTitle").text("Login Success!");
+            $('#alertDetail').text("uid: " + authData.uid);
+            top.location.href = "./order.html";
+        }
+    });    
+});
+*/
 
 // Create a callback which logs the current auth state
 function authDataCallback(authData) {
@@ -59,24 +74,30 @@ function authDataCallback(authData) {
     // use them in Security and Firebase Rules, and show profiles
     function saveUserData(authData) {
     // find a suitable name based on the meta info given by each provider
-    function getName(authData) {
-        switch(authData.provider) {
-            case 'password':
-                return authData.password.email.replace(/@.*/, '');
-            case 'twitter':
-                return authData.twitter.displayName;
-            case 'facebook':
-                return authData.facebook.displayName;
+        function getName(authData) {
+            switch(authData.provider) {
+                case 'password':
+                    return authData.password.email.replace(/@.*/, '');
+                case 'twitter':
+                    return authData.twitter.displayName;
+                case 'facebook':
+                    return authData.facebook.displayName;
+            }
         }
-    }
     
-    jumprDB.child("users").child(authData.uid).set({
-            provider: authData.provider,
-            name: getName(authData),
-            cafe: 0
-    });
-}
-
+        jumprDB.child("users").child(authData.uid).once("value", function(snapshot) {
+            /* get cafe id*/  
+            if( !snapshot.child("cafe").exists()) {
+                jumprDB.child("users").child(authData.uid).set({
+                    provider: authData.provider,
+                    name: getName(authData),
+                    cafe: 0
+                });
+            }
+        }, function (errorObject) {
+            console.log("The read failed: " + errorObject.code);
+        });    
+    }
     
     if (authData) {
         console.log("User " + authData.uid + " is logged in with " + authData.provider);

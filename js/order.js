@@ -1,6 +1,6 @@
 var jumprDB = new Firebase('https://glowing-torch-883.firebaseio.com');
 
-var debugMode = false;
+var debugMode = true;
 
 if (debugMode === false) {
     $("#debugMode").hide();
@@ -45,8 +45,8 @@ if (authData) {
             }
 
             /* Display order info on the dashboard */
-            function addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, items, orderId) {
-                var timeAndName = timeOfPickUp + " " + firstName + " " + lastName;
+            function addOrder(name, lastName, timeOfOrder, timeOfPickUp, items, orderId) {
+                var timeAndName = timeOfPickUp + " " + name;
     
                 $orders = $(".orders")
                 $orderBottom = $orders.children(".order.template");
@@ -72,8 +72,8 @@ if (authData) {
                 $orderAfter.before($order);
             }
 
-            function confirmOrder (snapshot, firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId) {
-                var timeAndName = timeOfPickUp + " " + firstName + " " + lastName;
+            function confirmOrder (snapshot, name, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId) {
+                var timeAndName = timeOfPickUp + " " + name;
                 bootbox.dialog({
                     //size: 'large',
                     closeButton: false,
@@ -101,7 +101,7 @@ if (authData) {
                                     if (error) {
                                         alert("Data could not be saved." + error);
                                     } else {
-                                        addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+                                        addOrder(name, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
                                     }
                                 });
                             }
@@ -113,7 +113,7 @@ if (authData) {
     
             var newOrder = snapshot.val();
      
-            var firstName = newOrder.firstName,
+            var name = newOrder.name,
                 lastName = newOrder.lastName,
                 timeOfPickUp = newOrder.timeOfPickUp,
                 timeOfOrder = newOrder.timeOfOrder,
@@ -128,9 +128,9 @@ if (authData) {
 
     
             if (snapshot.child("confirmed").val() === 1) {
-                addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+                addOrder(name, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
             } else if ( snapshot.child("confirmed").val() === 0 ) {
-                confirmOrder(snapshot, firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+                confirmOrder(snapshot, name, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
             }
     
             $(document).on("click", ".order#" + orderId, function(){
@@ -152,14 +152,14 @@ if (authData) {
         $(document).on("click", "#push", function(){
             var d = new Date();
     
-            var firstName = $(':text[name="firstNameInput"]').val(),
+            var name = $(':text[name="nameInput"]').val(),
                 lastName = $(':text[name="lastNameInput"]').val(),
                 timeOfOrder = Date(),
                 timeOfPickUp = $(':text[name="pickUpInput"]').val(),
                 items = $.parseJSON($(':text[name="itemsInput"]').val());
             
             orderDB.push({
-                firstName: firstName,
+                name: name,
                 lastName: lastName,
                 timeOfOrder: timeOfOrder,
                 timeOfPickUp: timeOfPickUp,
