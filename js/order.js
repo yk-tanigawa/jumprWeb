@@ -134,16 +134,21 @@ if (authData) {
             }
     
             $(document).on("click", ".order#" + orderId, function(){
-                /* copy to history DB */
-                historyDB.child(orderId).set( snapshot.val(), function(error) {
+                cafeDB.child("history").push( orderId, function(error){
                     if( error && typeof(console) !== 'undefined' && console.error ) {  
                         console.error(error); 
                     } else {
-                        /* delete item from order DB */
-                        snapshot.ref().remove();
+                        /* copy the order to history DB */
+                        historyDB.child(orderId).set( snapshot.val(), function(error) {
+                            if( error && typeof(console) !== 'undefined' && console.error ) {  
+                                console.error(error); 
+                            } else {
+                                /* delete item from order DB */
+                                snapshot.ref().remove();
+                            }
+                        });
                     }
-                });
-                
+                });  
             });
 
         }); 
