@@ -1,4 +1,4 @@
-var store = 1;
+var store = 2;
 
 var jumprDB = new Firebase('https://glowing-torch-883.firebaseio.com');
 var orderDB = jumprDB.child("orders").child(store);
@@ -15,33 +15,10 @@ function authDataCallback(authData) {
 // Register the callback to be fired every time auth state changes
 jumprDB.onAuth(authDataCallback);
 
-var isNewUser = true;
-jumprDB.onAuth(function(authData) {
-    if (authData && isNewUser) {
-    // save the user's profile into the database so we can list users,
-    // use them in Security and Firebase Rules, and show profiles
-        jumprDB.child("users").child(authData.uid).set({
-            provider: authData.provider,
-            name: getName(authData)
-        });
-    }
-});
 
 
-// find a suitable name based on the meta info given by each provider
-function getName(authData) {
-  switch(authData.provider) {
-     case 'password':
-       return authData.password.email.replace(/@.*/, '');
-     case 'twitter':
-       return authData.twitter.displayName;
-     case 'facebook':
-       return authData.facebook.displayName;
-  }
-}
 
-
-cafeDB.child("name").on("value", function(snapshot) {
+cafeDB.child("name").once("value", function(snapshot) {
     $("#storeName").text(snapshot.val());
 }, function (errorObject) {
     console.log("The read failed: " + errorObject.code);
@@ -56,11 +33,16 @@ if (debugMode == false) {
 /* hide the template of the order */
 $(".template").hide();
 
-function getPickUpTimeAndName($order) {
-    return $order.find(".timeAndName").text();
-}
 
-function addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, items, orderId) {
+
+
+
+orderDB.on('child_added', function(snapshot, prevChildKey) {
+    function getPickUpTimeAndName($order) {
+        return $order.find(".timeAndName").text();
+    }
+
+    function addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, items, orderId) {
     var timeAndName = timeOfPickUp + " " + firstName + " " + lastName;
     
     $orders = $(".orders")
@@ -87,7 +69,7 @@ function addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, items, orderId
     $orderAfter.before($order);
 }
 
-function confirmOrder (snapshot, firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId) {
+    function confirmOrder (snapshot, firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId) {
     var timeAndName = timeOfPickUp + " " + firstName + " " + lastName;
     
     bootbox.dialog({
@@ -122,12 +104,7 @@ function confirmOrder (snapshot, firstName, lastName, timeOfOrder, timeOfPickUp,
     
 }
 
-function removeOrder(orderID) {
-    $order = $(".orders").children(".order#" + orderID).remove();  
-}
-
-
-orderDB.on('child_added', function(snapshot, prevChildKey) {
+    
     var newOrder = snapshot.val();
     
     var firstName = newOrder.firstName,
@@ -156,6 +133,10 @@ orderDB.on('child_added', function(snapshot, prevChildKey) {
 }); 
 
 orderDB.on('child_removed', function(dataSnapshot) {
+    function removeOrder(orderID) {
+        $order = $(".orders").children(".order#" + orderID).remove();  
+    }
+    
     var orderIdToBeDeleted = dataSnapshot.ref().key();
     removeOrder(orderIdToBeDeleted);
 });
@@ -177,6 +158,7 @@ $(document).on("click", "#push", function(){
                   confirmed: false});
 });
 
+/* logout */
 $(document).on("click", "#logout", function(){
     jumprDB.unauth();
     top.location.href = "./login.html";

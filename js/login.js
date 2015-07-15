@@ -49,3 +49,40 @@ $(document).on("click", "#register", function(){
 
 
 
+// Create a callback which logs the current auth state
+function authDataCallback(authData) {
+    // save the user's profile into the database so we can list users,
+    // use them in Security and Firebase Rules, and show profiles
+    function saveUserData(authData) {
+    // find a suitable name based on the meta info given by each provider
+    function getName(authData) {
+  switch(authData.provider) {
+     case 'password':
+       return authData.password.email.replace(/@.*/, '');
+     case 'twitter':
+       return authData.twitter.displayName;
+     case 'facebook':
+       return authData.facebook.displayName;
+  }
+}
+    
+    jumprDB.child("users").child(authData.uid).set({
+            provider: authData.provider,
+            name: getName(authData)
+    });
+}
+
+    
+    if (authData) {
+        console.log("User " + authData.uid + " is logged in with " + authData.provider);
+        saveUserData(authData);
+
+    } else {
+        console.log("User is logged out");
+    }
+}
+
+// Register the callback to be fired every time auth state changes
+jumprDB.onAuth(authDataCallback);
+
+
