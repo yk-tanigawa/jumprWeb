@@ -69,9 +69,9 @@ if (authData) {
                     var name = newOrder.name,
                         timeOfPickUp = newOrder.timeOfPickUp,
                         timeOfOrder = newOrder.timeOfOrder,
-                        orderId = snapshot.key();
+                        orderId = snap.key();
     
-                    var itemsObj = snapshot.child("items");
+                    var itemsObj = snap.child("items");
                     var itemsHtml = "<ul>";
                     itemsObj.forEach(function(childSnapshot) {
                         itemsHtml += '<li>' + childSnapshot.key() + " " + childSnapshot.val() +'</li>';

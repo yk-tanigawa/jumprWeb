@@ -1,6 +1,6 @@
 var jumprDB = new Firebase('https://glowing-torch-883.firebaseio.com');
 
-var debugMode = true;
+var debugMode = false;
 
 if (debugMode === false) {
     $("#debugMode").hide();
