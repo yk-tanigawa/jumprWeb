@@ -1,4 +1,4 @@
-var store = 2;
+var store = 3;
 var orderDBall = new Firebase('https://glowing-torch-883.firebaseio.com/orders');
 var orderDB = orderDBall.child(store);
 
@@ -21,7 +21,7 @@ function addOrder(firstName, lastName, timeOfOrder, timeOfPickup, items, orderId
     
     $orders = $(".orders")
     $orderBottom = $orders.children(".order.template");
-    $orderBefore = $orderBottom;
+    $orderAfter = $orderBottom;
     
     $order = $orders.children(".order.template").clone();
     $order.removeClass("template");
@@ -35,13 +35,15 @@ function addOrder(firstName, lastName, timeOfOrder, timeOfPickup, items, orderId
     $order.find(".orderId").text("Order ID : " + orderId);
     $order.find(".timeOfOrder").text("This oreder was created on " + timeOfOrder);
     
-    if( getPickUpTimeAndName($order) < getPickUpTimeAndName($orderBefore) ){
-        $orderBefore = $orderBefore.prev();
+    
+    while( getPickUpTimeAndName($order) < getPickUpTimeAndName($orderAfter.prev()) ){
+        $orderAfter = $orderAfter.prev();
     }
     
-    $orderBefore.after($order);
-
+    $orderAfter.before($order);
 }
+
+
 
 function removeOrder(orderID) {
     $order = $(".orders").children(".order#" + orderID).remove();  
