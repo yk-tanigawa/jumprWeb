@@ -1,4 +1,4 @@
-var store = 1;
+var store = 2;
 
 var jumprDB = new Firebase('https://glowing-torch-883.firebaseio.com');
 var orderDB = jumprDB.child("orders").child(store);
@@ -6,33 +6,21 @@ var cafeDB =  jumprDB.child("cafes").child(store);
 
 
 
-/*
+
 var authData = jumprDB.getAuth();
 
 if (authData) {
-    cafeDB.child("name").once("value", function(snapshot) {
-        $("#storeName").text(snapshot.val());
+    jumprDB.child("users").child(authData.uid).once("value", function(snapshot) {
+        var store = snapshot.child("cafe").val();
+        console.log(store);
+        var orderDB = jumprDB.child("orders").child(store);
+        var cafeDB =  jumprDB.child("cafes").child(store);
     }, function (errorObject) {
         console.log("The read failed: " + errorObject.code);
     });
-
-    
-    
-    var store = jumprDB.child("users").child(authData.uid).child("cafe").val();
-    console.log("cafe num: " + store);
 }
+    
 
-*/
-/*
-function initialize(authData) {
-    if (authData) {
-        store = jumprDB.child("users").child(authData.uid).child("cafe").val();
-        console.log(store);
-        //var orderDB = jumprDB.child("orders").child(store);
-        //var cafeDB =  jumprDB.child("cafes").child(store);
-    }
-}
-*/
 
 // Create a callback which logs the current auth state
 function authDataCallback(authData) {
