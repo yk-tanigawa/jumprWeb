@@ -92,16 +92,14 @@ function confirmOrder (snapshot, firstName, lastName, timeOfOrder, timeOfPickUp,
                 label: "Confirm",
                 className: "btn-success",
                 callback: function() {
-                    addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
-                    snapshot.child("confirmed").ref().set(true);
-                    /*
-                    window.alert(snapshot.child("confirmed").val());
-                    snapshot.child("confirmed").set(true, function(error) {
-                        alert("Data could not be saved." + error);
-                    } else {
-                        addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
-                    }
-                    */
+                    /* set confirmation flag true and send it to Firebase*/
+                    snapshot.child("confirmed").ref().set(true, function(error) {
+                        if (error) {
+                            alert("Data could not be saved." + error);
+                        } else {
+                            addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+                        }
+                    });
                 }
             }
         }
