@@ -4,6 +4,43 @@ var jumprDB = new Firebase('https://glowing-torch-883.firebaseio.com');
 var orderDB = jumprDB.child("orders").child(store);
 var cafeDB =  jumprDB.child("cafes").child(store);
 
+// Create a callback which logs the current auth state
+function authDataCallback(authData) {
+  if (authData) {
+      console.log("User " + authData.uid + " is logged in with " + authData.provider);
+  } else {
+      console.log("User is logged out");
+  }
+}
+// Register the callback to be fired every time auth state changes
+jumprDB.onAuth(authDataCallback);
+
+var isNewUser = true;
+jumprDB.onAuth(function(authData) {
+    if (authData && isNewUser) {
+    // save the user's profile into the database so we can list users,
+    // use them in Security and Firebase Rules, and show profiles
+        jumprDB.child("users").child(authData.uid).set({
+            provider: authData.provider,
+            name: getName(authData)
+        });
+    }
+});
+
+
+// find a suitable name based on the meta info given by each provider
+function getName(authData) {
+  switch(authData.provider) {
+     case 'password':
+       return authData.password.email.replace(/@.*/, '');
+     case 'twitter':
+       return authData.twitter.displayName;
+     case 'facebook':
+       return authData.facebook.displayName;
+  }
+}
+
+
 cafeDB.child("name").on("value", function(snapshot) {
     $("#storeName").text(snapshot.val());
 }, function (errorObject) {
@@ -50,36 +87,14 @@ function addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, items, orderId
     $orderAfter.before($order);
 }
 
-
-
-function removeOrder(orderID) {
-    $order = $(".orders").children(".order#" + orderID).remove();  
-}
-
-/* push to Server */
-$("#push").click(function() {
-    var d = new Date();
-    
-    var firstName = $(':text[name="firstNameInput"]').val(),
-        lastName = $(':text[name="lastNameInput"]').val(),
-        timeOfOrder = Date(),
-        timeOfPickUp = $(':text[name="pickUpInput"]').val(),
-        items = $.parseJSON($(':text[name="itemsInput"]').val());
-    orderDB.push({firstName: firstName,
-                  lastName: lastName,
-                  timeOfOrder: timeOfOrder,
-                  timeOfPickUp: timeOfPickUp,
-                  items: items,
-                  confirmed: false});
-});
-
-
 function confirmOrder (snapshot, firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId) {
     var timeAndName = timeOfPickUp + " " + firstName + " " + lastName;
     
     bootbox.dialog({
+        //size: 'large',
+        closeButton: false,
         title: timeAndName,
-        message: "New order! <br>" + itemsHtml,
+        message: "<large>" + "New order! <br>" + itemsHtml + "</large>",
         buttons: {
             reject: {
                 label: "Reject",
@@ -107,8 +122,14 @@ function confirmOrder (snapshot, firstName, lastName, timeOfOrder, timeOfPickUp,
     
 }
 
+function removeOrder(orderID) {
+    $order = $(".orders").children(".order#" + orderID).remove();  
+}
+
+
 orderDB.on('child_added', function(snapshot, prevChildKey) {
     var newOrder = snapshot.val();
+    
     var firstName = newOrder.firstName,
         lastName = newOrder.lastName,
         timeOfPickUp = newOrder.timeOfPickUp,
@@ -122,12 +143,16 @@ orderDB.on('child_added', function(snapshot, prevChildKey) {
         itemsHtml += '<li>' + childSnapshot.key() + " " + childSnapshot.val() +'</li>';
     });
     itemsHtml += "</ul>";
-        
-    confirmOrder(snapshot, firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
-        
-    $(document).on("click", ".order#" + orderId, function(){
-        snapshot.ref().remove();
-    });
+
+    
+    if (snapshot.child("confirmed").val() == true) {
+        addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+    } else {
+        confirmOrder(snapshot, firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+        $(document).on("click", ".order#" + orderId, function(){
+            snapshot.ref().remove();
+        });
+    }
 }); 
 
 orderDB.on('child_removed', function(dataSnapshot) {
@@ -135,10 +160,28 @@ orderDB.on('child_removed', function(dataSnapshot) {
     removeOrder(orderIdToBeDeleted);
 });
 
+/* push to Server */
+$(document).on("click", "#push", function(){
+    var d = new Date();
+    
+    var firstName = $(':text[name="firstNameInput"]').val(),
+        lastName = $(':text[name="lastNameInput"]').val(),
+        timeOfOrder = Date(),
+        timeOfPickUp = $(':text[name="pickUpInput"]').val(),
+        items = $.parseJSON($(':text[name="itemsInput"]').val());
+    orderDB.push({firstName: firstName,
+                  lastName: lastName,
+                  timeOfOrder: timeOfOrder,
+                  timeOfPickUp: timeOfPickUp,
+                  items: items,
+                  confirmed: false});
+});
 
-
-
-
+$(document).on("click", "#logout", function(){
+    jumprDB.unauth();
+    top.location.href = "./login.html";
+});
+    
 
 /*
 $(document).on("click", ".order", function(){
