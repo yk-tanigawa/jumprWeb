@@ -20,6 +20,7 @@ if (authData) {
         console.log(store);
         var orderDB = jumprDB.child("orders").child(store);
         var cafeDB =  jumprDB.child("cafes").child(store);
+        var historyDB = jumprDB.child("history");
         
         // Create a callback which logs the current auth state
         function authDataCallback(authData) {
@@ -45,7 +46,7 @@ if (authData) {
             }
 
             /* Display order info on the dashboard */
-            function addOrder(name, lastName, timeOfOrder, timeOfPickUp, items, orderId) {
+            function addOrder(name, timeOfOrder, timeOfPickUp, items, orderId) {
                 var timeAndName = timeOfPickUp + " " + name;
     
                 $orders = $(".orders")
@@ -72,7 +73,7 @@ if (authData) {
                 $orderAfter.before($order);
             }
 
-            function confirmOrder (snapshot, name, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId) {
+            function confirmOrder (snapshot, name, timeOfOrder, timeOfPickUp, itemsHtml, orderId) {
                 var timeAndName = timeOfPickUp + " " + name;
                 bootbox.dialog({
                     //size: 'large',
@@ -101,7 +102,7 @@ if (authData) {
                                     if (error) {
                                         alert("Data could not be saved." + error);
                                     } else {
-                                        addOrder(name, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+                                        addOrder(name, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
                                     }
                                 });
                             }
@@ -114,7 +115,6 @@ if (authData) {
             var newOrder = snapshot.val();
      
             var name = newOrder.name,
-                lastName = newOrder.lastName,
                 timeOfPickUp = newOrder.timeOfPickUp,
                 timeOfOrder = newOrder.timeOfOrder,
                 orderId = snapshot.key();
@@ -128,13 +128,22 @@ if (authData) {
 
     
             if (snapshot.child("confirmed").val() === 1) {
-                addOrder(name, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+                addOrder(name, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
             } else if ( snapshot.child("confirmed").val() === 0 ) {
-                confirmOrder(snapshot, name, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+                confirmOrder(snapshot, name, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
             }
     
             $(document).on("click", ".order#" + orderId, function(){
-                snapshot.ref().remove();
+                /* copy to history DB */
+                historyDB.child(orderId).set( snapshot.val(), function(error) {
+                    if( error && typeof(console) !== 'undefined' && console.error ) {  
+                        console.error(error); 
+                    } else {
+                        /* delete item from order DB */
+                        snapshot.ref().remove();
+                    }
+                });
+                
             });
 
         }); 
@@ -153,14 +162,12 @@ if (authData) {
             var d = new Date();
     
             var name = $(':text[name="nameInput"]').val(),
-                lastName = $(':text[name="lastNameInput"]').val(),
                 timeOfOrder = Date(),
                 timeOfPickUp = $(':text[name="pickUpInput"]').val(),
                 items = $.parseJSON($(':text[name="itemsInput"]').val());
             
             orderDB.push({
                 name: name,
-                lastName: lastName,
                 timeOfOrder: timeOfOrder,
                 timeOfPickUp: timeOfPickUp,
                 items: items,
