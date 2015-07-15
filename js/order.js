@@ -1,8 +1,38 @@
-var store = 2;
+var store = 1;
 
 var jumprDB = new Firebase('https://glowing-torch-883.firebaseio.com');
 var orderDB = jumprDB.child("orders").child(store);
 var cafeDB =  jumprDB.child("cafes").child(store);
+
+
+
+/*
+var authData = jumprDB.getAuth();
+
+if (authData) {
+    cafeDB.child("name").once("value", function(snapshot) {
+        $("#storeName").text(snapshot.val());
+    }, function (errorObject) {
+        console.log("The read failed: " + errorObject.code);
+    });
+
+    
+    
+    var store = jumprDB.child("users").child(authData.uid).child("cafe").val();
+    console.log("cafe num: " + store);
+}
+
+*/
+/*
+function initialize(authData) {
+    if (authData) {
+        store = jumprDB.child("users").child(authData.uid).child("cafe").val();
+        console.log(store);
+        //var orderDB = jumprDB.child("orders").child(store);
+        //var cafeDB =  jumprDB.child("cafes").child(store);
+    }
+}
+*/
 
 // Create a callback which logs the current auth state
 function authDataCallback(authData) {
@@ -14,7 +44,6 @@ function authDataCallback(authData) {
 }
 // Register the callback to be fired every time auth state changes
 jumprDB.onAuth(authDataCallback);
-
 
 
 
@@ -32,8 +61,6 @@ if (debugMode == false) {
 
 /* hide the template of the order */
 $(".template").hide();
-
-
 
 
 
@@ -70,9 +97,8 @@ orderDB.on('child_added', function(snapshot, prevChildKey) {
 }
 
     function confirmOrder (snapshot, firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId) {
-    var timeAndName = timeOfPickUp + " " + firstName + " " + lastName;
-    
-    bootbox.dialog({
+        var timeAndName = timeOfPickUp + " " + firstName + " " + lastName;
+        bootbox.dialog({
         //size: 'large',
         closeButton: false,
         title: timeAndName,
@@ -82,15 +108,20 @@ orderDB.on('child_added', function(snapshot, prevChildKey) {
                 label: "Reject",
                 className: "btn-danger",
                 callback: function() {
-                    snapshot.ref().remove();
+                    /* set confirmation flag 1 and send it to Firebase*/
+                    snapshot.child("confirmed").ref().set("-1", function(error) {
+                        if (error) {
+                            alert("Data could not be saved." + error);
+                        }
+                    });
                 }
             },
             confirm: {
                 label: "Confirm",
                 className: "btn-success",
                 callback: function() {
-                    /* set confirmation flag true and send it to Firebase*/
-                    snapshot.child("confirmed").ref().set(true, function(error) {
+                    /* set confirmation flag 1 and send it to Firebase*/
+                    snapshot.child("confirmed").ref().set("1", function(error) {
                         if (error) {
                             alert("Data could not be saved." + error);
                         } else {
@@ -101,8 +132,7 @@ orderDB.on('child_added', function(snapshot, prevChildKey) {
             }
         }
     });
-    
-}
+    }
 
     
     var newOrder = snapshot.val();
@@ -122,14 +152,16 @@ orderDB.on('child_added', function(snapshot, prevChildKey) {
     itemsHtml += "</ul>";
 
     
-    if (snapshot.child("confirmed").val() == true) {
+    if (snapshot.child("confirmed").val() === "1") {
         addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
-    } else {
+    } else if ( snapshot.child("confirmed").val() === "0" ) {
         confirmOrder(snapshot, firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
-        $(document).on("click", ".order#" + orderId, function(){
-            snapshot.ref().remove();
-        });
     }
+    
+    $(document).on("click", ".order#" + orderId, function(){
+        snapshot.ref().remove();
+    });
+
 }); 
 
 orderDB.on('child_removed', function(dataSnapshot) {
@@ -155,7 +187,7 @@ $(document).on("click", "#push", function(){
                   timeOfOrder: timeOfOrder,
                   timeOfPickUp: timeOfPickUp,
                   items: items,
-                  confirmed: false});
+                  confirmed: "0"});
 });
 
 /* logout */
