@@ -12,7 +12,6 @@ if (authData) {
         
         var store = snapshot.child("cafe").val();
         console.log(store);
-        var orderDB = jumprDB.child("orders").child(store);
         var cafeDB =  jumprDB.child("cafes").child(store);
         var historyDB = jumprDB.child("history");
         
@@ -34,7 +33,7 @@ if (authData) {
             console.log("The read failed: " + errorObject.code);
         });
 
-        orderDB.on('child_added', function(snapshot, prevChildKey) {
+        historyDB.on('child_added', function(snapshot, prevChildKey) {
             function getPickUpTimeAndName($order) {
                 return $order.find(".timeAndName").text();
             }
@@ -67,44 +66,6 @@ if (authData) {
                 $orderAfter.before($order);
             }
 
-            function confirmOrder (snapshot, name, timeOfOrder, timeOfPickUp, itemsHtml, orderId) {
-                var timeAndName = timeOfPickUp + " " + name;
-                bootbox.dialog({
-                    //size: 'large',
-                    closeButton: false,
-                    title: timeAndName,
-                    message: "<large>" + "New order! <br>" + itemsHtml + "</large>",
-                    buttons: {
-                        reject: {
-                            label: "Reject",
-                            className: "btn-danger",
-                            callback: function() {
-                                /* set confirmation flag 1 and send it to Firebase*/
-                                snapshot.child("confirmed").ref().set(-1, function(error) {
-                                    if (error) {
-                                        alert("Data could not be saved." + error);
-                                    }
-                                });
-                            }
-                        },
-                        confirm: {
-                            label: "Confirm",
-                            className: "btn-success",
-                            callback: function() {
-                                /* set confirmation flag 1 and send it to Firebase*/
-                                snapshot.child("confirmed").ref().set(1, function(error) {
-                                    if (error) {
-                                        alert("Data could not be saved." + error);
-                                    } else {
-                                        addOrder(name, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
-                                    }
-                                });
-                            }
-                        }
-                    }
-                });
-            }
-
     
             var newOrder = snapshot.val();
      
@@ -120,57 +81,17 @@ if (authData) {
             });
             itemsHtml += "</ul>";
 
-    
-            if (snapshot.child("confirmed").val() === 1) {
-                addOrder(name, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
-            } else if ( snapshot.child("confirmed").val() === 0 ) {
-                confirmOrder(snapshot, name, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
-            }
-    
-            $(document).on("click", ".order#" + orderId, function(){
-                cafeDB.child("history").push( orderId, function(error){
-                    if( error && typeof(console) !== 'undefined' && console.error ) {  
-                        console.error(error); 
-                    } else {
-                        /* copy the order to history DB */
-                        historyDB.child(orderId).set( snapshot.val(), function(error) {
-                            if( error && typeof(console) !== 'undefined' && console.error ) {  
-                                console.error(error); 
-                            } else {
-                                /* delete item from order DB */
-                                snapshot.ref().remove();
-                            }
-                        });
-                    }
-                });  
-            });
-
+            addOrder(name, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+            
         }); 
 
-        orderDB.on('child_removed', function(dataSnapshot) {
+        history.on('child_removed', function(dataSnapshot) {
             function removeOrder(orderID) {
                 $order = $(".orders").children(".order#" + orderID).remove();  
             }
     
             var orderIdToBeDeleted = dataSnapshot.ref().key();
             removeOrder(orderIdToBeDeleted);
-        });
-
-        /* push to Server */
-        $(document).on("click", "#push", function(){
-            var d = new Date();
-    
-            var name = $(':text[name="nameInput"]').val(),
-                timeOfOrder = Date(),
-                timeOfPickUp = $(':text[name="pickUpInput"]').val(),
-                items = $.parseJSON($(':text[name="itemsInput"]').val());
-            
-            orderDB.push({
-                name: name,
-                timeOfOrder: timeOfOrder,
-                timeOfPickUp: timeOfPickUp,
-                items: items,
-                confirmed: 0});
         });
 
         /* logout */
