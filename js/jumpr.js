@@ -1,8 +1,16 @@
 var store = 1;
-var orderDBall = new Firebase('https://glowing-torch-883.firebaseio.com/orders');
-var orderDB = orderDBall.child(store);
 
-var debugMode = false;
+var jumprDB = new Firebase('https://glowing-torch-883.firebaseio.com');
+var orderDB = jumprDB.child("orders").child(store);
+var cafeDB =  jumprDB.child("cafes").child(store);
+
+cafeDB.child("name").on("value", function(snapshot) {
+    $("#storeName").text(snapshot.val());
+}, function (errorObject) {
+    console.log("The read failed: " + errorObject.code);
+});
+
+var debugMode = true;
 
 if (debugMode == false) {
     $("#debugMode").hide();
@@ -15,9 +23,8 @@ function getPickUpTimeAndName($order) {
     return $order.find(".timeAndName").text();
 }
 
-function addOrder(firstName, lastName, timeOfOrder, timeOfPickup, items, orderId) {
-    
-    var timeAndName = timeOfPickup + " " + firstName + " " + lastName;
+function addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, items, orderId) {
+    var timeAndName = timeOfPickUp + " " + firstName + " " + lastName;
     
     $orders = $(".orders")
     $orderBottom = $orders.children(".order.template");
@@ -67,6 +74,40 @@ $("#push").click(function() {
 });
 
 
+function confirmOrder (snapshot, firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId) {
+    var timeAndName = timeOfPickUp + " " + firstName + " " + lastName;
+    
+    bootbox.dialog({
+        title: timeAndName,
+        message: "New order! <br>" + itemsHtml,
+        buttons: {
+            reject: {
+                label: "Reject",
+                className: "btn-danger",
+                callback: function() {
+                    snapshot.ref().remove();
+                }
+            },
+            confirm: {
+                label: "Confirm",
+                className: "btn-success",
+                callback: function() {
+                    addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+                    /*
+                    window.alert(snapshot.child("confirmed").val());
+                    snapshot.child("confirmed").set(true, function(error) {
+                        alert("Data could not be saved." + error);
+                    } else {
+                        addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+                    }
+                    */
+                }
+            }
+        }
+    });
+    
+}
+
 orderDB.on('child_added', function(snapshot, prevChildKey) {
     var newOrder = snapshot.val();
     var firstName = newOrder.firstName,
@@ -83,13 +124,8 @@ orderDB.on('child_added', function(snapshot, prevChildKey) {
     });
     itemsHtml += "</ul>";
         
-    /*
-      Comfirmation of the order 
-                                 */
-    
-    
-    addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
-
+    confirmOrder(snapshot, firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+        
     $(document).on("click", ".order#" + orderId, function(){
         snapshot.ref().remove();
     });
@@ -101,7 +137,10 @@ orderDB.on('child_removed', function(dataSnapshot) {
 });
 
 
-BootstrapDialog.alert('I want banana!');
+
+
+
+
 /*
 $(document).on("click", ".order", function(){
     //window.alert("deleting the item");
