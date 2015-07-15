@@ -37,7 +37,8 @@ $(document).on("click", "#login", function(){
 $(document).on("click", "#register", function(){
     jumprDB.createUser({
         email    : $('#txtEmail').val(),
-        password : $('#txtPass').val()
+        password : $('#txtPass').val(),
+        cafe     : 0
     }, function(error, userData) {
         if (error) {
             console.log("Error creating user:", error);
