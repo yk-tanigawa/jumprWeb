@@ -93,6 +93,7 @@ function confirmOrder (snapshot, firstName, lastName, timeOfOrder, timeOfPickUp,
                 className: "btn-success",
                 callback: function() {
                     addOrder(firstName, lastName, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+                    snapshot.child("confirmed").ref().set(true);
                     /*
                     window.alert(snapshot.child("confirmed").val());
                     snapshot.child("confirmed").set(true, function(error) {
