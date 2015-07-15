@@ -1,15 +1,15 @@
-var store = 3;
+var store = 1;
 var orderDBall = new Firebase('https://glowing-torch-883.firebaseio.com/orders');
 var orderDB = orderDBall.child(store);
 
-var debugMode = true;
+var debugMode = false;
 
 if (debugMode == false) {
     $("#debugMode").hide();
 };
 
 /* hide the template of the order */
-//$(".template").hide();
+$(".template").hide();
 
 function getPickUpTimeAndName($order) {
     return $order.find(".timeAndName").text();
@@ -101,11 +101,7 @@ orderDB.on('child_removed', function(dataSnapshot) {
 });
 
 
-if("12:00" > "11:00"){
-    window.alert("hey!");
-}
-
-
+BootstrapDialog.alert('I want banana!');
 /*
 $(document).on("click", ".order", function(){
     //window.alert("deleting the item");
