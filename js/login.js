@@ -38,12 +38,15 @@ $(document).on("click", "#register", function(){
     jumprDB.createUser({
         email    : $('#txtEmail').val(),
         password : $('#txtPass').val(),
-        cafe     : 0
     }, function(error, userData) {
         if (error) {
             console.log("Error creating user:", error);
+            $("#alertTitle").text("Error creating user:");
+            $("#alertDetail").text("");
         } else {
             console.log("Successfully created user account with uid:", userData.uid);
+            $("#alertTitle").text("Successfully created user account");
+            $("#alertDetail").text("uid: " + userData.uid);
         }
     });
 });
@@ -57,19 +60,20 @@ function authDataCallback(authData) {
     function saveUserData(authData) {
     // find a suitable name based on the meta info given by each provider
     function getName(authData) {
-  switch(authData.provider) {
-     case 'password':
-       return authData.password.email.replace(/@.*/, '');
-     case 'twitter':
-       return authData.twitter.displayName;
-     case 'facebook':
-       return authData.facebook.displayName;
-  }
-}
+        switch(authData.provider) {
+            case 'password':
+                return authData.password.email.replace(/@.*/, '');
+            case 'twitter':
+                return authData.twitter.displayName;
+            case 'facebook':
+                return authData.facebook.displayName;
+        }
+    }
     
     jumprDB.child("users").child(authData.uid).set({
             provider: authData.provider,
-            name: getName(authData)
+            name: getName(authData),
+            cafe: 0
     });
 }
 
