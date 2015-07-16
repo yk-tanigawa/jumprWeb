@@ -12,7 +12,9 @@ $(".template").hide();
 /* Get User Info*/ 
 
 var authData = jumprDB.getAuth();
-if (authData) {
+if (!authData) {
+    top.location.href = "./login.html";
+} else {
     jumprDB.child("users").child(authData.uid).once("value", function(snapshot) {
         /* get cafe id*/
         
@@ -191,6 +193,7 @@ if (authData) {
         
     }, function (errorObject) {
         console.log("The read failed: " + errorObject.code);
+        top.location.href = "./login.html";
     });
 }
     
