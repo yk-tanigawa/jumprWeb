@@ -106,6 +106,7 @@ if (!authData) {
                         }
                         
                     }
+                    top.location.href = "./order.html";
                 });                                    
             });
         });  
