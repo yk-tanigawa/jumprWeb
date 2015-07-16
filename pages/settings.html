@@ -18,7 +18,7 @@
     <link href="../bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
+    <link href="../dist/css/sb-admin-2_order.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -34,29 +34,285 @@
 
 <body>
     <div id="wrapper">
-        <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">Jumpr</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                        <li>
+                            <a href="./order.html">
+                                <div>
+                                    <i class="fa fa-tasks fa-fw"></i> Order List
+                                    <span class="pull-right text-muted small"></span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="./history.html">
+                                <div>
+                                    <i class="fa fa-upload fa-fw"></i> Order History
+                                    <span class="pull-right text-muted small"></span>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-alerts -->
+                </li>
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="./user_profile.html"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#" id="logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+        </nav>
+
+        <div id="page-wrapper">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Settings</h3>
-                        </div>
-                        <div class="panel-body">
-                            <form role="form">
-                                <fieldset>                                
-                                    <div class="form-group">
-                                        <label id="label">Cafe Number</label>
-                                        <input class="form-control" id="cafeNum" placeholder="0" name="cafeNum" type="text" autofocus>
+                    <h2>
+                        Settings
+                    </h2>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <form role="form">
+                        <fieldset>
+                            <div class="row">
+                            <div class="col-md-4">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">General Info</h3>
                                     </div>
-                                
-                                    <!--submit-->
-                                    <button type="button" class="btn btn-lg btn-success btn-block" id="set">Set</button>
-                                    <br />
-                                    <button type="reset" class="btn btn-lg btn-info btn-block" id="reset">Reset</button>
-                                </fieldset>
-                            </form>
-                        </div>
-                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label>Name of Cafe</label>
+                                            <input class="form-control" id="name" placeholder="Cafe Jumpr" name="name" type="text" autofocus>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Address</label>
+                                            <input class="form-control" id="address" placeholder="10 Avenue de la Bornala" name="address" type="text" autofocus>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Postal code</label>
+                                            <input class="form-control" id="code" placeholder="06200 Nice" name="code" type="text" autofocus>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Country</label>
+                                            <input class="form-control" id="country" placeholder="France" name="country" type="text" autofocus>
+                                        </div>
+
+                                    </div>
+                                </div>    
+                            </div>
+                            <div class="col-md-8">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Menu</h3>
+                                    </div>
+                                    <!-- /.panel-heading -->
+                                    <div class="panel-body">
+                                        <!-- Nav tabs -->
+                                        <ul class="nav nav-pills">
+                                            <li class="active">
+                                                <a href="#pills01" data-toggle="tab">
+                                                    <div class="form-group">
+                                                        <label>Category Name 1</label>
+                                                        <input class="form-control"  placeholder="Cake" id="pills01-name" name="pills01-name" type="text" autofocus>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#pills02" data-toggle="tab">
+                                                    <div class="form-group">
+                                                        <label>Category Name 2</label>
+                                                        <input class="form-control"  placeholder="Hot Drinks" id="pills02-name" name="pills02-name" type="text" autofocus>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#pills03" data-toggle="tab">
+                                                    <div class="form-group">
+                                                        <label>Category Name 3</label>
+                                                        <input class="form-control"  placeholder="Pastries" id="pills03-name" name="pills03-name" type="text" autofocus>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <!-- Tab panes -->
+                                        <div class="tab-content">
+                                            <div class="tab-pane fade in active" id="pills01">                                                
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <div class="form-group">
+                                                            <label>Name</label>
+                                                            <input class="form-control"  placeholder="Chocolate Cake" id="pills01-01-name" name="pills01-01-name" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="Chocolate Cake" id="pills01-02-name" name="pills01-02-name" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="Chocolate Cake" id="pills01-03-name" name="pills01-03-name" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="Chocolate Cake" id="pills01-04-name" name="pills01-04-name" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="Chocolate Cake" id="pills01-05-name" name="pills01-05-name" type="text" autofocus>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label>Price</label>
+                                                            <input class="form-control"  placeholder="3.4" id="pills01-01-price" name="pills01-01-price" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="3.4" id="pills01-02-price" name="pills01-02-price" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="3.4" id="pills01-03-price" name="pills01-03-price" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="3.4" id="pills01-04-price" name="pills01-04-price" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="3.4" id="pills01-05-price" name="pills01-05-price" type="text" autofocus>
+                                                        </div>
+
+                                                    </div> 
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="pills02">                                                
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <div class="form-group">
+                                                            <label>Name</label>
+                                                            <input class="form-control"  placeholder="Cappucino" id="pills02-01-name" name="pills02-01-name" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="Cappucino" id="pills02-02-name" name="pills02-02-name" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="Cappucino" id="pills02-03-name" name="pills02-03-name" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="Cappucino" id="pills02-04-name" name="pills02-04-name" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="Cappucino" id="pills02-05-name" name="pills02-05-name" type="text" autofocus>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label>Price</label>
+                                                            <input class="form-control"  placeholder="2.6" id="pills02-01-price" name="pills02-01-price" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="2.6" id="pills02-02-price" name="pills02-02-price" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="2.6" id="pills02-03-price" name="pills02-03-price" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="2.6" id="pills02-04-price" name="pills02-04-price" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="2.6" id="pills02-05-price" name="pills02-05-price" type="text" autofocus>
+                                                        </div>
+
+                                                    </div> 
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="pills03">                                                
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <div class="form-group">
+                                                            <label>Name</label>
+                                                            <input class="form-control"  placeholder="Croissant" id="pills03-01-name" name="pills03-01-name" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="Croissant" id="pills03-02-name" name="pills03-02-name" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="Croissant" id="pills03-03-name" name="pills03-03-name" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="Croissant" id="pills03-04-name" name="pills03-04-name" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="Croissant" id="pills03-05-name" name="pills03-05-name" type="text" autofocus>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label>Price</label>
+                                                            <input class="form-control"  placeholder="1.6" id="pills03-01-price" name="pills03-01-price" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="1.6" id="pills03-02-price" name="pills03-02-price" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="1.6" id="pills03-03-price" name="pills03-03-price" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="1.6" id="pills03-04-price" name="pills03-04-price" type="text" autofocus>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input class="form-control"  placeholder="1.6" id="pills03-05-price" name="pills03-05-price" type="text" autofocus>
+                                                        </div>
+
+                                                    </div> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.panel-body -->
+                                </div>
+                                <!-- /.panel -->
+                            </div>
+                            </div>
+                            <button type="button" class="btn btn-lg btn-success btn-block" id="set">Set</button>
+                            <br />
+                            <button type="reset" class="btn btn-lg btn-info btn-block" id="reset">Reset</button>
+                        </fieldset>
+                    </form>
                 </div>
             </div>
         </div>

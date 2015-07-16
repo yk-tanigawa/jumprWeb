@@ -46,7 +46,7 @@ if (authData) {
             }
 
             /* Display order info on the dashboard */
-            function addOrder(name, timeOfOrder, timeOfPickUp, items, orderId) {
+            function addOrder(name, timeOfOrder, timeOfPickUp, items, total, orderId) {
                 var timeAndName = timeOfPickUp + " " + name;
     
                 $orders = $(".orders")
@@ -62,6 +62,7 @@ if (authData) {
     
                 $order.find(".timeAndName").text(timeAndName);
                 $order.find(".itemList").append(items);
+                $order.find(".total").text("total : " + total);
                 $order.find(".orderId").text("Order ID : " + orderId);
                 $order.find(".timeOfOrder").text("This oreder was created on " + timeOfOrder);
     
@@ -73,13 +74,15 @@ if (authData) {
                 $orderAfter.before($order);
             }
 
-            function confirmOrder (snapshot, name, timeOfOrder, timeOfPickUp, itemsHtml, orderId) {
+            function confirmOrder (snapshot, name, timeOfOrder, timeOfPickUp, itemsHtml, total, orderId) {
                 var timeAndName = timeOfPickUp + " " + name;
                 bootbox.dialog({
                     //size: 'large',
                     closeButton: false,
                     title: timeAndName,
-                    message: "<large>" + "New order! <br>" + itemsHtml + "</large>",
+                    message: "<large>" + "New order! <br />" + 
+                             itemsHtml + "<br />" +
+                            "total : " + total + "</large>",
                     buttons: {
                         reject: {
                             label: "Reject",
@@ -102,7 +105,7 @@ if (authData) {
                                     if (error) {
                                         alert("Data could not be saved." + error);
                                     } else {
-                                        addOrder(name, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+                                        addOrder(name, timeOfOrder, timeOfPickUp, itemsHtml, total, orderId);
                                     }
                                 });
                             }
@@ -117,6 +120,7 @@ if (authData) {
             var name = newOrder.name,
                 timeOfPickUp = newOrder.timeOfPickUp,
                 timeOfOrder = newOrder.timeOfOrder,
+                total = newOrder.total.toFixed(2),
                 orderId = snapshot.key();
     
             var itemsObj = snapshot.child("items");
@@ -125,12 +129,11 @@ if (authData) {
                 itemsHtml += '<li>' + childSnapshot.key() + " " + childSnapshot.val() +'</li>';
             });
             itemsHtml += "</ul>";
-
-    
+                
             if (snapshot.child("confirmed").val() === 1) {
-                addOrder(name, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+                addOrder(name, timeOfOrder, timeOfPickUp, itemsHtml, total, orderId);
             } else if ( snapshot.child("confirmed").val() === 0 ) {
-                confirmOrder(snapshot, name, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+                confirmOrder(snapshot, name, timeOfOrder, timeOfPickUp, itemsHtml, total, orderId);
             }
     
             $(document).on("click touchstart tap", ".order#" + orderId, function(){
