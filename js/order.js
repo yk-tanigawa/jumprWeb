@@ -133,7 +133,7 @@ if (authData) {
                 confirmOrder(snapshot, name, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
             }
     
-            $(document).on("click", ".order#" + orderId, function(){
+            $(document).on("click touchstart tap", ".order#" + orderId, function(){
                 cafeDB.child("history").push( orderId, function(error){
                     if( error && typeof(console) !== 'undefined' && console.error ) {  
                         console.error(error); 
@@ -150,7 +150,7 @@ if (authData) {
                     }
                 });  
             });
-
+            
         }); 
 
         orderDB.on('child_removed', function(dataSnapshot) {
@@ -163,7 +163,7 @@ if (authData) {
         });
 
         /* push to Server */
-        $(document).on("click", "#push", function(){
+        $(document).on("click touchstart tap", "#push", function(){
             var d = new Date();
     
             var name = $(':text[name="nameInput"]').val(),
@@ -179,8 +179,9 @@ if (authData) {
                 confirmed: 0});
         });
 
+        
         /* logout */
-        $(document).on("click", "#logout", function(){
+        $(document).on("click touchstart tap", "#logout", function(){
             jumprDB.unauth();
             top.location.href = "./login.html";
         });
