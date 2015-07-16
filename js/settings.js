@@ -55,6 +55,12 @@ if (authData) {
         });
 
         /****************/
+        /* logout */
+        $(document).on("click touchstart tap", "#logout", function(){
+            jumprDB.unauth();
+            top.location.href = "./login.html";
+        });
+
         
         // Create a callback which logs the current auth state
         function authDataCallback(authData) {
