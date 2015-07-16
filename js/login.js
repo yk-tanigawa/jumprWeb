@@ -1,40 +1,75 @@
 var jumprDB = new Firebase('https://glowing-torch-883.firebaseio.com');
 
-$(document).on("click", "#login", function(){
+// Create a callback which logs the current auth state
+function authDataCallback(authData) {
     
-    jumprDB.authWithPassword({
-        email    : $('#txtEmail').val(),
-        password : $('#txtPass').val()
-    }, function(error, authData) {
-    if (error) {
-        $("#alertTitle").text("Login Failed!");
-        switch (error.code) {
-            case "INVALID_EMAIL":
-                console.log("The specified user account email is invalid.");
-                $("#alertDetail").text("The specified user account email is invalid.");
-                break;
-            case "INVALID_PASSWORD":
-                console.log("The specified user account password is incorrect.");
-                $('#alertDetail').text("The specified user account password is incorrect.");
-                break;
-            case "INVALID_USER":
-                console.log("The specified user account does not exist.");
-                $('#alertDetail').text("The specified user account does not exist.");
-                break;
-            default:
-                console.log("Error logging user in:", error);
-                $('#alertDetail').text("Error logging user in:", error);
-        }
-    } else {
-        console.log("Authenticated successfully with payload:", authData);
-        $("#alertTitle").text("Login Success!");
-        $('#alertDetail').text("uid: " + authData.uid);
-        top.location.href = "./order.html";
-    }
+    
+    
+    $(document).on("click", "#login", function(){
+        jumprDB.authWithPassword({
+            email    : $('#txtEmail').val(),
+            password : $('#txtPass').val()
+        }, function(error, authData) {
+            if (error) {
+                $("#alertTitle").text("Login Failed!");
+                switch (error.code) {
+                    case "INVALID_EMAIL":
+                        console.log("The specified user account email is invalid.");
+                        $("#alertDetail").text("The specified user account email is invalid.");
+                        break;
+                    case "INVALID_PASSWORD":
+                        console.log("The specified user account password is incorrect.");
+                        $('#alertDetail').text("The specified user account password is incorrect.");
+                        break;
+                    case "INVALID_USER":
+                        console.log("The specified user account does not exist.");
+                        $('#alertDetail').text("The specified user account does not exist.");
+                        break;
+                    default:
+                        console.log("Error logging user in:", error);
+                        $('#alertDetail').text("Error logging user in:", error);
+                }
+            } else {
+                console.log("Authenticated successfully with payload:", authData);
+                $("#alertTitle").text("Login Success!");
+                $('#alertDetail').text("uid: " + authData.uid);
+                top.location.href = "./order.html";
+            }
+        });
     });
-});
-
-$(document).on("click", "#register", function(){
+    
+    $(document).on("click", "#register", function(){
+        function saveUserData(authD) {
+            // find a suitable name based on the meta info given by each provider
+            function getName(authdata) {
+                switch(authdata.provider) {
+                    case 'password':
+                        return authdata.password.email.replace(/@.*/, '');
+                    case 'twitter':
+                        return authdata.twitter.displayName;
+                    case 'facebook':
+                        return authdata.facebook.displayName;
+                }
+            }
+        
+        console.log(authD.uid);
+        console.log(authData.uid); 
+        console.log(authData.provider); 
+        console.log(getName(authData)); 
+            
+        jumprDB.child("users").child(authData.uid).set({
+            provider: authData.provider,
+            name: getName(authData),
+            cafe: authData.uid
+        }, function(error){
+            if( error && typeof(console) !== 'undefined' && console.error ) {  
+                console.error(error); 
+            } else {
+                top.location.href = "./settings.html";
+            }
+        });
+    }
+    
     jumprDB.createUser({
         email    : $('#txtEmail').val(),
         password : $('#txtPass').val(),
@@ -42,67 +77,53 @@ $(document).on("click", "#register", function(){
         if (error) {
             console.log("Error creating user:", error);
             $("#alertTitle").text("Error creating user:");
-            $("#alertDetail").text("");
+            $("#alertDetail").text("Please fill the email & password.");
         } else {
-            console.log("Successfully created user account with uid:", userData.uid);
-            $("#alertTitle").text("Successfully created user account");
-            $("#alertDetail").text("uid: " + userData.uid);
+            console.log("Successfully created user account with uid:", userData.uid);            
+                        
+            jumprDB.authWithPassword({
+                email    : $('#txtEmail').val(),
+                password : $('#txtPass').val()
+            }, function(error, authData) {
+                if (error) {
+                    $("#alertTitle").text("Login Failed!");
+                    switch (error.code) {
+                        case "INVALID_EMAIL":
+                            console.log("The specified user account email is invalid.");
+                            $("#alertDetail").text("The specified user account email is invalid.");
+                            break;
+                        case "INVALID_PASSWORD":
+                            console.log("The specified user account password is incorrect.");
+                            $('#alertDetail').text("The specified user account password is incorrect.");
+                            break;
+                        case "INVALID_USER":
+                            console.log("The specified user account does not exist.");
+                            $('#alertDetail').text("The specified user account does not exist.");
+                            break;
+                        default:
+                            console.log("Error logging user in:", error);
+                            $('#alertDetail').text("Error logging user in:", error);
+                    }
+                } else {
+                    console.log("Authenticated successfully with payload:", authData);
+                    saveUserData(userData);
+                    $("#alertTitle").text("Login Success!");
+                    $('#alertDetail').text("uid: " + authData.uid);                    
+                }
+            });
+
+            
+            //$("#alertTitle").text("Successfully created user account");
+            //$("#alertDetail").text("Please click the login button");   
         }
     });
 });
-
-/*
-$(document).on("click", "#facebook", function(){    
-    jumprDB.authWithOAuthPopup("facebook", function(error, authData) {
-        if (error) {
-            console.log("Login Failed!", error);
-            $("#alertTitle").text("Login Failed!");
-            $('#alertDetail').text("Error logging user in:", error);
-        } else {
-            console.log("Authenticated successfully with payload:", authData);
-            $("#alertTitle").text("Login Success!");
-            $('#alertDetail').text("uid: " + authData.uid);
-            top.location.href = "./order.html";
-        }
-    });    
-});
-*/
-
-// Create a callback which logs the current auth state
-function authDataCallback(authData) {
+    
     // save the user's profile into the database so we can list users,
     // use them in Security and Firebase Rules, and show profiles
-    function saveUserData(authData) {
-    // find a suitable name based on the meta info given by each provider
-        function getName(authData) {
-            switch(authData.provider) {
-                case 'password':
-                    return authData.password.email.replace(/@.*/, '');
-                case 'twitter':
-                    return authData.twitter.displayName;
-                case 'facebook':
-                    return authData.facebook.displayName;
-            }
-        }
-    
-        jumprDB.child("users").child(authData.uid).once("value", function(snapshot) {
-            /* get cafe id*/  
-            if( !snapshot.child("cafe").exists()) {
-                jumprDB.child("users").child(authData.uid).set({
-                    provider: authData.provider,
-                    name: getName(authData),
-                    cafe: 0
-                });
-            }
-        }, function (errorObject) {
-            console.log("The read failed: " + errorObject.code);
-        });    
-    }
     
     if (authData) {
         console.log("User " + authData.uid + " is logged in with " + authData.provider);
-        saveUserData(authData);
-
     } else {
         console.log("User is logged out");
     }
