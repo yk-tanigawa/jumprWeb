@@ -122,13 +122,14 @@ if (!authData) {
             var name = newOrder.name,
                 timeOfPickUp = newOrder.timeOfPickUp,
                 timeOfOrder = newOrder.timeOfOrder,
-                total = newOrder.total.toFixed(2),
+                total = parseFloat(newOrder.total + "" ).toFixed(2),
                 orderId = snapshot.key();
     
             var itemsObj = snapshot.child("items");
             var itemsHtml = "<ul>";
             itemsObj.forEach(function(childSnapshot) {
-                itemsHtml += '<li>' + childSnapshot.key() + " " + childSnapshot.val() +'</li>';
+                //itemsHtml += '<li>' + childSnapshot.key() + " " + childSnapshot.val() +'</li>';
+                itemsHtml += '<li>' + childSnapshot.val() +'</li>';
             });
             itemsHtml += "</ul>";
                 

@@ -13,18 +13,21 @@ if (!authData) {
         
         var store = snapshot.child("cafe").val();
         console.log(store);
-        $("#label").text("Cafe (current store: " + store + ")")
+        $("#label").text("Cafe (current store: " + store + ")")        
+        $('#cafeNum').val(store);
 
+        
+        
+        
         $(document).on("click", "#set", function(){
             jumprDB.child("users").child(authData.uid).child("cafe").set($('#cafeNum').val());
             top.location.href = "./order.html";
         });
 
-        /*
         $(document).on("click", "#reset", function(){
             $('#cafeNum').val(store);
         });
-        */
+
         
         /****************/
         

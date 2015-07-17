@@ -67,20 +67,22 @@ if (!authData) {
                         $orderAfter.before($order);
                     }
                     
-                    var newOrder = snap.val();
-                    var name = newOrder.name,
-                        timeOfPickUp = newOrder.timeOfPickUp,
-                        timeOfOrder = newOrder.timeOfOrder,
-                        orderId = snap.key();
+                    if(snap.exists()){
+                        var newOrder = snap.val();
+                        var name = newOrder.name,
+                            timeOfPickUp = newOrder.timeOfPickUp,
+                            timeOfOrder = newOrder.timeOfOrder,
+                            orderId = snap.key();
     
-                    var itemsObj = snap.child("items");
-                    var itemsHtml = "<ul>";
-                    itemsObj.forEach(function(childSnapshot) {
-                        itemsHtml += '<li>' + childSnapshot.key() + " " + childSnapshot.val() +'</li>';
-                    });
-                    itemsHtml += "</ul>";
+                        var itemsObj = snap.child("items");
+                        var itemsHtml = "<ul>";
+                        itemsObj.forEach(function(childSnapshot) {
+                            itemsHtml += '<li>' + childSnapshot.key() + " " + childSnapshot.val() +'</li>';
+                        });
+                        itemsHtml += "</ul>";
 
-                    addOrder(name, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+                        addOrder(name, timeOfOrder, timeOfPickUp, itemsHtml, orderId);
+                    }
                 });
             }
             
