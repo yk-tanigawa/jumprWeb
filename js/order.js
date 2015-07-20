@@ -68,8 +68,11 @@ if (!authData) {
                                           getHour(timeOfPickUp), getMinute(timeOfPickUp) - offset);
                     
                     var diff = pickUp - now;
-                    setTimeout(function(){ highlight($item); }, pickUp - now);
-                    
+                    if ( diff > 0 ) {
+                        setTimeout(function(){ highlight($item); }, pickUp - now);
+                    } else {
+                        highlight($item);
+                    }
                 }
                 
                 
