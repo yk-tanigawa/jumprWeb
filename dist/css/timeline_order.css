@@ -40,6 +40,10 @@
     clear: both;
 }
 
+.orders > li > .timeline-panel.urgent {
+    background-color: #ffff66
+}
+
 .timeline > li > .timeline-panel {
     float: left;
     position: relative;
@@ -49,6 +53,8 @@
     border-radius: 2px;
     -webkit-box-shadow: 0 1px 6px rgba(0,0,0,0.175);
     box-shadow: 0 1px 6px rgba(0,0,0,0.175);
+    
+    
 }
 
 .timeline > li > .timeline-panel:before {
@@ -90,6 +96,7 @@
     color: #fff;
     background-color: #999999;
 }
+
 
 .timeline > li.timeline-inverted > .timeline-panel {
     float: right;

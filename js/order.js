@@ -49,6 +49,30 @@ if (!authData) {
 
             /* Display order info on the dashboard */
             function addOrder(name, timeOfOrder, timeOfPickUp, items, total, orderId) {
+                
+                function highlightOrder ($item, timeOfPickUp) {
+                    function highlight ($item) {
+                        $item.children(".timeline-panel").addClass("urgent")
+                    }
+                    
+                    function getHour (string) {
+                        return parseInt(string.substring(0,2));
+                    }
+                    function getMinute (string) {
+                        return parseInt(string.substring(3,5));
+                    }                    
+                    
+                    var offset = 3;
+                    var now = new Date();
+                    var pickUp = new Date(now.getYear() + 1900, now.getMonth(), now.getDate(),
+                                          getHour(timeOfPickUp), getMinute(timeOfPickUp) - offset);
+                    
+                    var diff = pickUp - now;
+                    setTimeout(function(){ highlight($item); }, pickUp - now);
+                    
+                }
+                
+                
                 var timeAndName = timeOfPickUp + " " + name;
     
                 $orders = $(".orders")
@@ -74,6 +98,13 @@ if (!authData) {
                 }
     
                 $orderAfter.before($order);
+                
+                highlightOrder($order, timeOfPickUp);
+
+                
+                /**/
+                
+                
             }
 
             function confirmOrder (snapshot, name, timeOfOrder, timeOfPickUp, itemsHtml, total, orderId) {
