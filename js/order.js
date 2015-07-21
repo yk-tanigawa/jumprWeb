@@ -62,7 +62,8 @@ if (!authData) {
                         return parseInt(string.substring(3,5));
                     }                    
                     
-                    var offset = 3;
+                    var offset = 5;
+                    // preparation time is 5 min.
                     var now = new Date();
                     var pickUp = new Date(now.getYear() + 1900, now.getMonth(), now.getDate(),
                                           getHour(timeOfPickUp), getMinute(timeOfPickUp) - offset);
