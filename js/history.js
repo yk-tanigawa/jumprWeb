@@ -77,7 +77,7 @@ if (!authData) {
                         var itemsObj = snap.child("items");
                         var itemsHtml = "<ul>";
                         itemsObj.forEach(function(childSnapshot) {
-                            itemsHtml += '<li>' + childSnapshot.key() + " " + childSnapshot.val() +'</li>';
+                            itemsHtml += '<li>' + childSnapshot.key() + " x " + childSnapshot.val() +'</li>';
                         });
                         itemsHtml += "</ul>";
 
